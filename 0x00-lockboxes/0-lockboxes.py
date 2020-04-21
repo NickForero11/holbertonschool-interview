@@ -41,7 +41,8 @@ def seek(box, status):
     """
     # Update the map with new keys.
     for key in box:
-        status[key] = True
+        if key < len(status):
+            status[key] = True
     return status
 
 
