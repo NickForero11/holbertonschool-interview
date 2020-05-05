@@ -1,72 +1,69 @@
 #include "binary_trees.h"
 
 /**
- * binary_tree_is_full	-	Checks if a tree is full binary tree
- *							(Every node has 2 childrens).
+ * binary_tree_height - Measures the height of a binary tree.
  *
- * @tree: The pointer of the tree that will be checked.
+ * @tree: The pointer of the tree that will be measured.
  *
- * Return: 1 if tree is a full binary tree otherwise 0.
-*/
+ * Return: The height of the tree as a size_t value.
+ */
 
-int binary_tree_is_full(const binary_tree_t *tree)
+size_t binary_tree_height(const binary_tree_t *tree)
 {
+	size_t left_height, right_height;
+
 	if (tree == NULL)
+	{
 		return (0);
-	else if (tree->right != NULL && tree->left != NULL)
-		return (1);
-	else
-		return (0);
+	}
+
+	left_height = tree->left ? 1 + binary_tree_height(tree->left) : 0;
+	right_height = tree->right ? 1 + binary_tree_height(tree->right) : 0;
+
+	return (left_height >= right_height ? left_height : right_height);
 }
 
 /**
- * heap_insert_correct_level	-	Inserts a node in a binary tree according
- *									the current level if the tree isn't full.
+ * binary_tree_size - Measures the size of a binary tree.
  *
- * @root: The pointer to the tree where the node will be inserted.
+ * @tree: The pointer of the tree that will be measured.
  *
- * @new_node: The new node that will be inserted.
- *
- * Return:	A pointer to the inserted node, otherwise
- *			NULL if it fails or the tree is full.
-*/
+ * Return: The size of the tree as a size_t value.
+ */
 
-heap_t *heap_insert_correct_level(heap_t **root, heap_t *new_node)
+size_t binary_tree_size(const binary_tree_t *tree)
 {
-	heap_t *iterator;
-
-	iterator = *root;
-
-	if (new_node == NULL)
-		return (NULL);
-
-	/*Case root is full*/
-	if (binary_tree_is_full(iterator))
+	if (tree == NULL)
 	{
-		/*case left node is full*/
-		if (binary_tree_is_full(iterator->left))
-		{
-			/*Case left and right node are full*/
-			if (binary_tree_is_full(iterator->right))
-				return (NULL);
-			/*Case left is full but right not*/
-			heap_insert_correct_level(&(iterator->right), new_node);
-		}
-		/*Case left isn't full*/
-		else
-			heap_insert_correct_level(&(iterator->left), new_node);
-	}
-	/*Case root not full*/
-	else
-	{
-		new_node->parent = iterator;
-		if (iterator->left == NULL)
-			iterator->left = new_node;
-		else
-			iterator->right = new_node;
+		return (0);
 	}
 
-	return (new_node);
+	return (1 + binary_tree_size(tree->left) + binary_tree_size(tree->right));
+}
+
+/**
+ * binary_tree_is_perfect - Checks if a tree is a perfect binary tree
+ *							(where number of nodes is equal to (2^height) - 1).
+ *
+ * @tree: The pointer of the tree that will be checked.
+ *
+ * Return: 1 if tree is a perfect binary tree otherwise 0.
+ */
+
+int binary_tree_is_perfect(const binary_tree_t *tree)
+{
+	size_t height, perfect, size;
+
+	if (tree == NULL)
+	{
+		return (0);
+	}
+
+	height = binary_tree_height(tree);
+	perfect = ((2 << height) - 1);
+	size = binary_tree_size(tree);
+
+	return (perfect == size ? 1 : 0);
 }
 
 /**
@@ -83,25 +80,43 @@ heap_t *heap_insert_correct_level(heap_t **root, heap_t *new_node)
 
 heap_t *heap_insert_driver(heap_t **root, heap_t *new_node)
 {
-	heap_t *response;
+	heap_t *iterator;
 
 	if (new_node == NULL)
 		return (NULL);
 
-	/*Try to insert the new node in the current level*/
-	response = heap_insert_correct_level(root, new_node);
-
-	/*Case childrens are full*/
-	if (response == NULL)
+	iterator = *root;
+	/*Case root is full*/
+	if (!(iterator->right != NULL && iterator->left != NULL))
 	{
-		/*Try insert on the left node*/
-		response = heap_insert_driver(&((*root)->left), new_node);
-		/*Try insert on the right node*/
-		if (response == NULL)
-			response = heap_insert_driver(&(*root)->right, new_node);
+		new_node->parent = iterator;
+		if (iterator->left == NULL)
+			iterator->left = new_node;
+		else
+			iterator->right = new_node;
+		return (new_node);
 	}
-
-	return (response);
+	/*Case root not perfect*/
+	else if (!binary_tree_is_perfect(iterator))
+	{
+		/*Check the children nodes and add the new node to the imperfect node*/
+		if (!binary_tree_is_perfect(iterator->left))
+		{
+			heap_insert_driver(&(iterator->left), new_node);
+		}
+		else
+		{
+			heap_insert_driver(&(iterator->right), new_node);
+		}
+		return (new_node);
+	}
+	else
+	/*Case root full, insert in the left node to make it imperfect*/
+	{
+		heap_insert_driver(&(iterator->left), new_node);
+		return (new_node);
+	}
+	return (NULL);
 }
 
 /**
@@ -167,6 +182,8 @@ heap_t *heap_insert(heap_t **root, int value)
 		return (NULL);
 
 	new_node = binary_tree_node(NULL, value);
+	if (new_node == NULL)
+		return (NULL);
 
 	/*Case empty tree*/
 	if (*root == NULL)
