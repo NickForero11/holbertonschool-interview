@@ -4,13 +4,13 @@
 
 
 def minOperations(n):
-    """Find the minimun operations to reach n using copy all and paste.
+    """Find the minimum operations to reach n using copy all and paste.
 
     Arguments:
         n (int): the desired num of characters.
 
     Returns:
-        int:    the minimun number of operations to get that quantity
+        int:    the minimum number of operations to get that quantity
                 of characters, which is the summatory of the prime
                 factors of @n.
     """
