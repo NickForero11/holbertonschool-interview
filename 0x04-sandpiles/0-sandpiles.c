@@ -9,15 +9,15 @@
  */
 static void print_grid(int grid[3][3])
 {
-	int i, j;
+	int x, y;
 
-	for (i = 0; i < 3; i++)
+	for (y = 0; y < 3; y++)
 	{
-		for (j = 0; j < 3; j++)
+		for (x = 0; x < 3; x++)
 		{
-			if (j)
+			if (x)
 				printf(" ");
-			printf("%d", grid[i][j]);
+			printf("%d", grid[y][x]);
 		}
 		printf("\n");
 	}
@@ -35,11 +35,11 @@ int check_stability(int grid[3][3])
 {
 	int x, y;
 
-	for (x = 0; x < 3; x++)
+	for (y = 0; y < 3; y++)
 	{
-		for (y = 0; y < 3; y++)
+		for (x = 0; x < 3; x++)
 		{
-			if (grid[x][y] > 3)
+			if (grid[y][x] > 3)
 				return (0);
 		}
 	}
@@ -59,11 +59,11 @@ void copy_sandpile(int origin[3][3], int destiny[3][3])
 {
 	int x, y;
 
-	for (x = 0; x < 3; x++)
+	for (y = 0; y < 3; y++)
 	{
-		for (y = 0; y < 3; y++)
+		for (x = 0; x < 3; x++)
 		{
-			destiny[x][y] = origin[x][y];
+			destiny[y][x] = origin[y][x];
 		}
 	}
 }
@@ -119,11 +119,11 @@ void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 		{0, 0, 0}};
 
 	/*Do the the sum of every element*/
-	for (x = 0; x < 3; x++)
+	for (y = 0; y < 3; y++)
 	{
-		for (y = 0; y < 3; y++)
+		for (x = 0; x < 3; x++)
 		{
-			grid1[x][y] += grid2[x][y];
+			grid1[y][x] += grid2[y][x];
 		}
 	}
 
@@ -133,13 +133,13 @@ void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 		printf("=\n");
 		print_grid(grid1);
 		copy_sandpile(grid1, aux);
-		for (x = 0; x < 3; x++)
+		for (y = 0; y < 3; y++)
 		{
-			for (y = 0; y < 3; y++)
+			for (x = 0; x < 3; x++)
 			{
 				/*Overflow the value and check its neighbours*/
-				grid1[x][y] = aux[x][y] > 3 ? aux[x][y] - 4 : aux[x][y];
-				grid1[x][y] += check_neighbours(aux, y, x);
+				grid1[y][x] = aux[y][x] > 3 ? aux[y][x] - 4 : aux[y][x];
+				grid1[y][x] += check_neighbours(aux, x, y);
 			}
 		}
 	}
