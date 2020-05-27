@@ -36,28 +36,17 @@ size_t listint_len(const listint_t *h)
  * Return: the nth node of a listint_t list or NULL if the node does not exist.
  */
 
-listint_t *get_nodeint_at_index(listint_t *head, unsigned int index)
+int get_nodeint_at_index(listint_t *head, unsigned int index)
 {
 	listint_t *iterator;
 	unsigned int i;
 
 	iterator = head;
 
-	if (!head)
-	{
-		return (NULL);
-	}
 	for (i = 0; i < index; i++)
-	{
-		if (iterator->next == NULL)
-		{
-			return (NULL);
-		}
+			iterator = iterator->next;
 
-		iterator = iterator->next;
-	}
-
-	return (iterator);
+	return (iterator->n);
 }
 
 /**
@@ -87,7 +76,7 @@ int is_palindrome(listint_t **head)
 	while (end > 0)
 	{
 		left = iterator->n;
-		right = get_nodeint_at_index(iterator, end)->n;
+		right = get_nodeint_at_index(iterator, end);
 
 		if (left != right)
 			return (0);
