@@ -24,7 +24,8 @@ try:
                 if count > 0:
                     print('{}: {}'.format(code, count))
                 lines = 0
-
+except KeyboardInterrupt:
+    pass
 finally:
     print('File size: {}'.format(total_size))
     for (code, count) in sorted(statuses.items()):
