@@ -19,14 +19,14 @@ try:
         statuses[status] += 1
         lines += 1
         if lines == 10:
-            print('Total Size: {}'.format(total_size))
+            print('File size: {}'.format(total_size))
             for (code, count) in sorted(statuses.items()):
                 if count > 0:
                     print('{}: {}'.format(code, count))
                 lines = 0
 
 finally:
-    print('Total Size: {}'.format(total_size))
+    print('File size: {}'.format(total_size))
     for (code, count) in sorted(statuses.items()):
         if count > 0:
             print('{}: {}'.format(code, count))
