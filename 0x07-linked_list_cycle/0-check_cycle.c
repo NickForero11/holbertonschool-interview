@@ -12,29 +12,21 @@ int check_cycle(listint_t *list)
 {
 	listint_t *a, *b;
 
-
 	if (list == NULL)
 		return (0);
 
-	a = list;
+	a = list, b = list;
 
-	if (a->next == NULL)
-		return (0);
-
-	b = a->next;
-
-	while (b->next != NULL)
+	while (a->next != NULL && b->next != NULL)
 	{
-		if (a->n == b->n)
-			return (1);
-
 		a = a->next;
-
-		if (b->next == NULL)
-			break;
-
 		b = b->next->next;
 
+		if (b == NULL)
+			break;
+
+		if (a->n == b->n)
+			return (1);
 	}
 
 	return (0);
